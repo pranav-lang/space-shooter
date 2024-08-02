@@ -9,7 +9,7 @@ class Alien:
         self.speed = 0.5
         self.width = width
         self.height = height
-        self.visible = True
+        self.alive = True
         self.lock = threading.Lock()
 
         # Bullet properties
@@ -20,7 +20,7 @@ class Alien:
         self.bullets = []
 
     def draw(self, window , shooter):
-        if self.visible:
+        if self.alive:
             window.blit(self.img, (self.x, self.y))
             pygame.draw.rect(window, (255, 0, 0), pygame.Rect(self.x, self.y, self.width, self.height) , 3)
 
@@ -42,6 +42,10 @@ class Alien:
         bullet_x = self.x + self.width // 2  - self.bullet_width
         bullet_y = self.y + self.height
         self.bullets.append([bullet_x, bullet_y])
+
+    def get_bullets(self):
+        return self.bullets
+
 
 
 

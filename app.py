@@ -12,11 +12,11 @@ pygame.mixer.init(44100, -16, 2, 2048)
 # CONSTANTS
 SHOOT_SOUND = pygame.mixer.Sound('./assets/shot.wav')  # Ensure the correct path and file name
 SHOOT_SOUND.set_volume(0.2)
-
-milliseconds_delay = 2000 # 0.5 seconds
+milliseconds_delay = 2000  # 2 seconds
 bullet_event = pygame.USEREVENT + 1
+my_font = pygame.font.SysFont('Comic Sans MS', 30)
+text_surface = my_font.render('GAME OVER!!', True, (255, 0, 0))
 pygame.time.set_timer(bullet_event, milliseconds_delay)
-
 
 # Define screen dimensions
 screen = pygame.display.set_mode((580, 580))
@@ -39,12 +39,11 @@ shooter = Shooter(SHOOTER_INIT_POS[0], SHOOTER_INIT_POS[1], 50, 50, shooter_img)
 aliens = []
 alien_img = pygame.image.load('./assets/alien2.png').convert_alpha()
 alien_img = pygame.transform.scale(alien_img, (40, 40))
-pos_x = [random.randint(0,400) for _ in range(10)]
+pos_x = [random.randint(0, 400) for _ in range(10)]
 
 for i in range(10):
     alien = Alien(pos_x[i], -10, 40, 40, alien_img)
     aliens.append(alien)
-
 
 # RANDOM STARS POSITION GENERATOR
 rand_x = [random.randint(0, 580) for _ in range(100)]
@@ -71,13 +70,12 @@ while running:
             running = False
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
-                if(shooter.alive):
+                if shooter.alive:
                     SHOOT_SOUND.play()
                     shooter.shoot()
         elif event.type == bullet_event:
             for alien in aliens:
                 alien.shoot()
-
 
     # Handle continuous movement based on key press
     keys = pygame.key.get_pressed()
@@ -95,12 +93,15 @@ while running:
 
     # Draw the alien
     for alien in aliens:
-        alien.draw(screen,shooter)
+        alien.draw(screen, shooter)
         alien.move_down(screen.get_width())
 
-    if(shooter.alive == False):
-        # stop the game
-        pass
+    if not shooter.alive:
+        # Display the "GAME OVER" text
+        screen.blit(text_surface, (screen.get_width() // 2 - text_surface.get_width() // 2, screen.get_height() // 2))
+        pygame.display.flip()
+        pygame.time.wait(2000)  # Wait for 2 seconds before quitting
+        running = False
 
     # Update the display
     pygame.display.flip()
